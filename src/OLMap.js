@@ -10,6 +10,7 @@ import GPX from 'ol/format/GPX';
 import { Stroke, Style } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import { useEffect, useRef, useState } from 'react';
+// import gpxFile from './data/te_araroa.gpx';
 
 function OLMap() {
 
@@ -21,7 +22,7 @@ function OLMap() {
 
   const initalFeaturesLayer = new VectorLayer({
     source: new VectorSource({
-      url: '../data/te_araroa.gpx',
+      url: 'https://raw.githubusercontent.com/DafyddLlyr/te_araroa_elevation/dist/data/te_araroa.gpx',
       format: new GPX(),
     }),
     style: new Style({
