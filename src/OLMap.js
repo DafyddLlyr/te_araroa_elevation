@@ -9,10 +9,17 @@ import GPX from 'ol/format/GPX';
 
 import { Stroke, Style } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
+import { useEffect, useRef, useState } from 'react';
 
 function OLMap() {
 
-  const vector = new VectorLayer({
+  const [ map, setMap ] = useState()
+  const [ featuresLayer, setFeaturesLayer ] = useState()
+  const mapElement = useRef()
+
+  useEffect(() => {
+
+  const initalFeaturesLayer = new VectorLayer({
     source: new VectorSource({
       url: '../data/te_araroa.gpx',
       format: new GPX(),
@@ -31,15 +38,11 @@ function OLMap() {
     })
   });
 
-  vector.getSource().on('addfeature', function(){
-    map.getView().fit(vector.getSource().getExtent(), {padding: [30, 30, 40, 30]});
-  });
-
-  const map = new Map({
-    target: 'map',
+  const initialMap  = new Map({
+    target: mapElement.current,
     layers: [
       xyz,
-      vector,
+      initalFeaturesLayer,
     ],
     view: new View({
       // projection: 'EPSG:3857',
@@ -47,10 +50,21 @@ function OLMap() {
       zoom: 2
     }),
   })
-  
+  setMap(initialMap)
+  setFeaturesLayer(initalFeaturesLayer)
+  }, [])
+
+  useEffect(() => {
+    if (featuresLayer) {
+      featuresLayer.getSource().on('addfeature', function(){
+        map.getView().fit(featuresLayer.getSource().getExtent(), {padding: [30, 30, 40, 30]});
+      });
+    }
+
+  })
 
   return (
-    <div id="map"></div>
+    <div ref={mapElement} id="map"></div>
   )
 }
 
